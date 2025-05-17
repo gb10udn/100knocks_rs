@@ -4,4 +4,4 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-polars = { version = "0.38.1", features = ["lazy", "csv"] }  # lazy＋csvは最小構成
+polars = { version = "0.46.0", features = ["lazy", "csv"] }  # INFO: 250517 "0.47.1" は動かなかった。

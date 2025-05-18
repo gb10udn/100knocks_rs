@@ -106,3 +106,21 @@ pub fn p_007() -> PolarsResult<()> {
 
     Ok(())
 }
+
+pub fn p_008() -> PolarsResult<()> {
+    let df = LazyCsvReader::new("./data/receipt.csv")
+        .finish()?
+        .select([
+            col("sales_ymd"),
+            col("customer_id"),
+            col("product_cd"),
+            col("amount")
+        ])
+        .filter(col("customer_id").eq(lit("CS018205000001")))
+        .filter(col("product_cd").neq(lit("P071401019")))  // INFO: 250518 問題文には "P071401019" と書いてあるが、この product_cd を含むものが入っていない、、、？
+        .collect()?;
+
+    println!("{:?}", df);
+
+    Ok(())
+}

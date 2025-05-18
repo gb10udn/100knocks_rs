@@ -75,3 +75,16 @@ pub fn p_005() -> PolarsResult<()> {
 
     Ok(())
 }
+
+pub fn p_006() -> PolarsResult<()> {
+    let df = LazyCsvReader::new("./data/receipt.csv")
+        .finish()?
+        .select([col("sales_ymd"), col("customer_id"), col("product_cd"), col("quantity"), col("amount")])
+        .filter(col("customer_id").eq(lit("CS018205000001")))
+        .filter(col("amount").gt_eq(lit(1000)).or(col("quantity").gt_eq(lit(4))))
+        .collect()?;
+
+    println!("{:?}", df);
+
+    Ok(())
+}

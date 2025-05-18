@@ -124,3 +124,16 @@ pub fn p_008() -> PolarsResult<()> {
 
     Ok(())
 }
+
+pub fn p_009() -> PolarsResult<()> {
+    let df = LazyCsvReader::new("./data/store.csv")
+        .with_n_rows(Some(10))
+        .finish()?
+        .filter(col("prefecture_cd").neq(lit(13)))
+        .filter(col("floor_area").lt_eq(lit(900)))
+        .collect();
+
+    println!("{:?}", df);
+
+    Ok(())
+}

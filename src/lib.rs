@@ -28,13 +28,18 @@ pub fn p_002() -> PolarsResult<()> {
 
 pub fn p_003() -> PolarsResult<()> {
     let file = "./data/receipt.csv";
-    let mut df = LazyCsvReader::new(file)
+    let df = LazyCsvReader::new(file)
         .with_n_rows(Some(10))
         .finish()?
-        .select([col("sales_ymd"), col("customer_id"), col("product_cd"), col("amount")])
+        .select([
+            col("sales_ymd").alias("sales_date"),  // INFO: 250518 .alias() で名称の変更ができる。.rename() はコメントアウトで残してるが制約多いので、良くないかも？
+            col("customer_id"),
+            col("product_cd"),
+            col("amount")
+        ])
         .collect()?;
          
-    let df = df.rename("sales_ymd", "sales_ymdsales_ymd".into())?;  // INFO: 250517 .rename() は、メソッドチェーンの中で使用不可。
+    // let df = df.rename("sales_ymd", "sales_ymdsales_ymd".into())?;  // INFO: 250517 .rename() は、メソッドチェーンの中で使用不可。
 
     println!("{:?}", df);
 
@@ -82,6 +87,19 @@ pub fn p_006() -> PolarsResult<()> {
         .select([col("sales_ymd"), col("customer_id"), col("product_cd"), col("quantity"), col("amount")])
         .filter(col("customer_id").eq(lit("CS018205000001")))
         .filter(col("amount").gt_eq(lit(1000)).or(col("quantity").gt_eq(lit(4))))
+        .collect()?;
+
+    println!("{:?}", df);
+
+    Ok(())
+}
+
+pub fn p_007() -> PolarsResult<()> {
+    let df = LazyCsvReader::new("./data/receipt.csv")
+        .finish()?
+        .select([col("sales_ymd"), col("customer_id"), col("product_cd"), col("quantity"), col("amount")])
+        .filter(col("customer_id").eq(lit("CS018205000001")))
+        .filter(col("amount").gt_eq(lit(1000)).and(col("amount").lt_eq(lit(2000))))
         .collect()?;
 
     println!("{:?}", df);
